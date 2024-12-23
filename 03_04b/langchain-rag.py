@@ -17,7 +17,7 @@ def config_llm():
     model_kwargs = { 
         "max_tokens_to_sample": 512,
         "temperature":0.1,  
-        "topP":1
+        "top_p":1
     }  
 
     model_id = "anthropic.claude-instant-v1"
@@ -42,7 +42,8 @@ def vector_search (query):
 
 
 #Configuring the llm and vector store
-
+llm = config_llm()
+vectorstore_faiss = config_vector_db("03_04b/social-media-training.pdf")
 
 #Creating the template   
 my_template = """
@@ -61,7 +62,29 @@ Assistant:
 """
 
 #Configure prompt template
-
+prompt_template = PromptTemplate(
+    input_variables=['input', 'info'],
+    template=my_template
+)
 #Create llm chain
+question_chain = LLMChain(
+    llm = llm,
+    prompt = prompt_template,
+    output_key = "answer"
+)
 
 #Get question, peform similarity search, invoke model and return result
+while True:
+    question = input('\nAsk a question about the Social Media Training Manual:\n')
+
+    #Perform a similarity search
+    info = vector_search(question)
+
+    #Invoke the model', providing add'l context
+    output = question_chain.invoke({
+        'input' : question,
+        'info' : info
+    })
+
+    #Display the result
+    print(output['answer'])

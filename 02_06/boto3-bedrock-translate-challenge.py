@@ -8,14 +8,14 @@ client = boto3.client(service_name='bedrock-runtime')
 #Construct the body
 #specify your prompt
 body = json.dumps({
-    "prompt": "", 
+    "prompt": "Translate to French: 'Learning about generative AI is fun and exciting using Amazon Bedrock'.", 
     "maxTokens": 200,
     "temperature": 0.5,
     "topP": 0.5
 })
 
 #Specify model id and content types
-modelId = ''
+modelId = 'ai21.j2-mid-v1'
 accept = 'application/json'
 contentType = 'application/json'
 
